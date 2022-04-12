@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Bauchbinde</title>
+		<style>
+			html, body {
+				margin: 0px auto;
+				font-family: Some Time Later, Tahoma, Verdana, Ubuntu, sans-serif;
+			}
+			
+			#tickerContainer {
+				display: none;
+				background-color: #ccc;
+				position: absolute;
+				top: 920px;
+				left: -999px;
+				padding-left: 16px;
+				padding-right: 16px;
+				transition: all ease-in-out 1s;
+			}
+			
+			h1 {
+				font-size: 2em;
+			}
+			
+			p {
+				font-size: 1.25em;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- HTML-Element -->
+		<div id="tickerContainer" />
+		
+		<!-- Beziehe "twitch-js" ein -->
+		<script src="https://unpkg.com/twitch-js"></script>
+		
+		<!-- JavaScript-Code -->
+		<script type="module">
+			const { Chat } = window.TwitchJs;
+			let token = undefined; // OAuth-Token
+			let username = undefined; // Benutzername
+			let rewardID = undefined; // Kanalpunkte-Belohnungs-ID
+			let channel = "(Kanalname)"; // Kanal
+			var currentTicker;
+			
+			// Name
+			const tickerName = [
+				["Foo"],
+				["Bar"],
+			];
+			
+			// Alter
+			const tickerAge = [
+				["18"],
+				["19"],
+				["20"],
+				["21"],
+				["22"],
+				["23"],
+				["24"],
+				["25"],
+				["26"],
+				["27"],
+				["28"],
+				["29"],
+				["30"],
+			];
+			
+			// Text
+			const tickerText = [
+				["Foo"],
+				["Bar"],
+			];
+			
+			const handleMessage = (msg) => {
+				if (msg.event != "PRIVMSG") { return; }
+				
+				if (rewardID != undefined) {
+					if (msg.tags.customRewardId != undefined) {
+						if (msg.tags.customRewardId == rewardID) {
+							setTicker();
+						}
+					}
+				}
+				
+				// Chat-Befehl (!bauchbinde / !ticker)
+				if (msg.message.startsWith("!bauchbinde") || msg.message.startsWith("!ticker")) {
+					setTicker();
+				}
+				
+				// Überprüfe Chat-Verbindung
+				if (msg.message.startsWith("!syscheck")) {
+					chatsay(channel, '/me Bauchbinde ist 𝗿𝗲𝗮𝗱𝘆');
+				}
+			};
+			
+			// Funktion für Bauchbinde-Befehl
+			function setTicker() {
+				// Entferne derzeitige Bauchbinde, wenn neue Bauchbinde erstellt wird
+				console.log(currentTicker);
+				if (currentTicker != undefined) {
+					currentTicker.remove();
+				}
+				
+				// Wähle Name, Alter und Text zufällig aus
+				var writeName = tickerName[Math.floor(Math.random()*tickerName.length)];
+				var writeAge = tickerAge[Math.floor(Math.random()*tickerAge.length)];
+				var writeText = tickerText[Math.floor(Math.random()*tickerText.length)];
+				
+				const tickerContainer = document.getElementById('tickerContainer');
+				
+				// Erstelle div-Element mit Klasse "ticker"
+				let ticker = document.createElement('div');
+				ticker.classList.add("ticker");
+				
+				// Erstelle h1-Element
+				let tickerH1 = document.createElement('h1');
+				tickerH1.appendChild(document.createTextNode(writeName + " (" + writeAge + ")"));
+				ticker.appendChild(tickerH1);
+				
+				// Erstelle p-Element
+				let tickerP = document.createElement('p');
+				tickerP.appendChild(document.createTextNode(writeText));
+				ticker.appendChild(tickerP);
+				
+				let tickerObject = tickerContainer.appendChild(ticker);
+				currentTicker = tickerObject;
+				
+				// Verschiebe Bauchbinde
+				document.querySelector("#tickerContainer").style.display = "block";
+				setTimeout(() => {
+					document.querySelector("#tickerContainer").style.left = "0px";
+				}, 100);
+				setTimeout(() => {
+					document.querySelector("#tickerContainer").style.left = "-999px";
+					setTimeout(() => {
+						document.querySelector("#tickerContainer").style.display = "none";
+					}, 1000);
+				}, 15000);
+				
+				// Schreibe Log der aktuellen Bauchbinde
+				console.log(writeName + " (" + writeAge + ") - " + writeText);
+			}
+			
+			function chatsay(channel, text) {
+				if (token != undefined) {
+					chatobj.say(channel, text);
+				} else {
+					console.log(text + " (is what I'd say if I HAD A TOKEN!!!)");
+				}
+			}
+			
+			const run = async () => {
+				const queryString = window.location.search;
+				const urlParams = new URLSearchParams(queryString);
+				
+				// Analysiere Kanalparameter
+				if(urlParams.has('channel')) {
+					channel = urlParams.get('channel');
+				}
+				
+				if(urlParams.has('rewardID')) {
+					rewardID = urlParams.get('rewardID');
+				}
+				
+				if(urlParams.has('username') && urlParams.has('token')) {
+					username = urlParams.get('username');
+					token = urlParams.get('token');
+				}
+				
+				const chat = new Chat({
+					token,
+					username,
+					log: { level: "warn" }
+				});
+				
+				chat.on("*", (message) => {
+					handleMessage(message);
+				});
+				
+				await chat.connect();
+				await chat.join(channel);
+				return chat;
+			};
+				
+			const chatobj = run();
+		</script>
+	</body>
+</html>
