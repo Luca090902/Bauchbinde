@@ -2,8 +2,8 @@
 Bauchbinde für Livestreams / Ticker for livestreams
 
 ## Nutzung / Use
-!bauchbinde
-!ticker
+* !bauchbinde
+* !ticker
 
 ## Versionen / Versions
 ### bauchbinde.html
