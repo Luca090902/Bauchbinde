@@ -1,7 +1,7 @@
 # Bauchbinde / Ticker
 Bauchbinde für Livestreams / Ticker for livestreams
 
-# Nutzung / Use
+## Nutzung / Use
 !bauchbinde
 !ticker
 
