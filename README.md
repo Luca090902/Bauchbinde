@@ -1,6 +1,10 @@
 # Bauchbinde / Ticker
 Bauchbinde für Livestreams / Ticker for livestreams
 
+# Nutzung / Use
+!bauchbinde
+!ticker
+
 ## Versionen / Versions
 ### bauchbinde.html
 Deutsche Version der Bauchbinde.
