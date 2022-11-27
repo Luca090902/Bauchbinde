@@ -47,31 +47,17 @@
 			
 			// Name
 			const tickerName = [
-				["Foo"],
-				["Bar"],
+				"Foo",
+				"Bar",
 			];
 			
-			// Alter
-			const tickerAge = [
-				["18"],
-				["19"],
-				["20"],
-				["21"],
-				["22"],
-				["23"],
-				["24"],
-				["25"],
-				["26"],
-				["27"],
-				["28"],
-				["29"],
-				["30"],
-			];
+			// Alter (18-30)
+			const tickerAge = new Array(13).fill(0).map((_, i) => (i+1) + 17);
 			
 			// Text
 			const tickerText = [
-				["Foo"],
-				["Bar"],
+				"Foo",
+				"Bar",
 			];
 			
 			const handleMessage = (msg) => {
@@ -163,6 +149,10 @@
 				
 				if(urlParams.has('rewardID')) {
 					rewardID = urlParams.get('rewardID');
+				}
+
+				if(urlParams.has("timeout")) {
+					timeout = urlParams.get("timeout");
 				}
 				
 				if(urlParams.has('username') && urlParams.has('token')) {
